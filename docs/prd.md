@@ -16,6 +16,7 @@ MorseAI is a browser app that converts speech audio into Morse code.
 - Provide Morse playback and visual signal modes
 - Provide static SEO/GEO content pages (About, FAQ) to help search crawlers and AI search agents find and cite MorseAI.
 - Provide full Light Mode and Dark Mode support with a user-friendly toggle in the navigation or settings.
+- Integrate Google Analytics tracking using `gtag.js` loaded inside the static HTML shell.
 
 ## Core Flows
 1. Upload or record audio.

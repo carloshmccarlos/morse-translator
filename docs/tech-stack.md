@@ -8,6 +8,7 @@
 - Tailwind CSS (configured for selector-based dark mode using `.dark` class)
 - CSS Custom Properties (`:root` / `html.dark`) mapped to Tailwind configuration for theme-responsive styling (`text-text-main`, `text-text-muted`, `text-text-title`, `text-text-h1`)
 - Web Audio API for tone playback
+- Google Analytics (gtag.js) for page traffic measurement
 
 ## Backend
 - Cloudflare Workers
@@ -23,5 +24,5 @@
 ## Deployment Notes
 - The app is a client-rendered SPA.
 - Vite handles static building; Cloudflare Pages redirects all non-file asset requests to `/index.html` to support client-side routing.
-- `index.html` carries SEO metadata and verification assets.
+- `index.html` carries SEO metadata, Google tag analytics script, and verification assets.
 - `public/` hosts static assets such as `favicon.png`, `robots.txt`, and `sitemap.xml`.

@@ -1,7 +1,7 @@
 # Architecture
 
 ## Runtime Layout
-- Static HTML shell loads the app and metadata.
+- Static HTML shell loads the app, analytics scripts (Google Tag Manager), and metadata.
 - React Router manages client-side routing.
 - React renders the interactive workspace into `#root` based on current path (`/`, `/about`, or `/faq`).
 - Cloudflare Pages handles SPA routing by falling back to `index.html` via `public/_redirects`.
