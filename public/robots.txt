@@ -1,0 +1,32 @@
+# ============================================================
+# AI Search Retrieval Bots — explicitly allow for citation
+# These bots power real-time AI answers (ChatGPT, Perplexity, etc.)
+# Blocking them removes your site from AI-generated search results.
+# ============================================================
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+# ============================================================
+# General crawlers
+# ============================================================
+
+User-agent: *
+Disallow: /api/
+
+Sitemap: https://ai-morse-code-translator.loveyouall.qzz.io/sitemap.xml

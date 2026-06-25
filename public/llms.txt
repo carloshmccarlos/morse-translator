@@ -1,0 +1,77 @@
+# MorseAI — AI-Powered Morse Code Translator
+
+> MorseAI is a free, browser-based tool that uses AI speech recognition to convert
+> voice recordings and audio files directly into Morse code. No registration required.
+> Built for amateur radio enthusiasts, educators, escape room designers, and hobbyists.
+
+## Pages
+
+- [Translator](https://ai-morse-code-translator.loveyouall.qzz.io/): Main tool — upload audio or record voice to get Morse code output with playback and export.
+- [About](https://ai-morse-code-translator.loveyouall.qzz.io/about): Features overview, use cases, Morse code character reference table, history timeline, and tech stack.
+- [FAQ](https://ai-morse-code-translator.loveyouall.qzz.io/faq): 26 answered questions across 5 categories — Getting Started, Audio, Morse Code, Features, Privacy.
+
+## What MorseAI Does
+
+MorseAI accepts spoken audio (microphone or uploaded file) and produces:
+- International Morse code text output (dots, dashes, word separators)
+- Audible Morse tone playback at adjustable WPM (5–40 words per minute)
+- Visual signal lamp that blinks the Morse pattern
+- Downloadable .wav audio file of the Morse signal
+- Exportable results as .txt, .csv, or .xlsx
+
+## Core Workflow
+
+1. Upload an audio file (.wav .mp3 .m4a .ogg, max 3MB) **or** click "Start Record" to use your microphone
+2. AI speech recognition transcribes your audio to text (powered by Deepgram)
+3. The text is converted to Morse code using the ITU-R M.1677 international standard
+4. Play as audio tone, watch as visual lamp signal, or export in multiple formats
+
+## Key Features
+
+- **Voice-to-Morse**: Record up to 30 seconds of speech → instant Morse code
+- **Audio Upload**: Accepts WAV, MP3, M4A, OGG files up to 3MB
+- **Reverse Translation**: Paste Morse code (dots and dashes) → get original text
+- **Batch Translation**: Import .txt, .csv, .xls, .xlsx files → translate all rows at once
+- **WPM Control**: Adjustable playback speed from 5 to 40 words per minute
+- **WAV Export**: Download the Morse signal as a standard WAV audio file
+- **Visual Lamp**: Watch Morse code as a blinking light signal
+- **Learning Mode**: Practice decoding random Morse code characters (A–Z, 0–9)
+- **Punctuation Support**: Full ITU-R standard including . , ? ! / ( ) & : ; = + - " @ '
+
+## Supported Character Set
+
+Letters: A–Z (26 characters)
+Digits: 0–9 (10 characters)
+Punctuation: . , ? ! / ( ) & : ; = + - _ " @ ' (17 characters)
+Standard: ITU-R M.1677 International Morse Code
+
+## Morse Code Reference
+
+- Dot (dit): shortest signal unit
+- Dash (dah): 3× the duration of a dot
+- Letter gap: 3 dots of silence between characters
+- Word gap: 7 dots of silence between words (represented as " / " in text output)
+
+## Use Cases
+
+- **Amateur Radio (Ham Radio)**: Practice CW (continuous wave) Morse communication
+- **Learning**: Decode random character challenges with built-in Learning Mode
+- **Escape Rooms**: Generate Morse code puzzles with audio output
+- **ARG (Alternate Reality Games)**: Encode messages as audio or light signals
+- **Education**: Demonstrate Morse code in classroom settings
+- **Accessibility**: Alternative communication encoding/decoding
+
+## Technology Stack
+
+- React 18 SPA with Vite build system
+- Deepgram Nova-2 model for AI speech-to-text transcription
+- Web Audio API for real-time Morse tone synthesis
+- Cloudflare Workers for serverless API backend
+
+## Pricing
+
+Free. No account, no registration, no rate limits for end users.
+
+## URL
+
+https://ai-morse-code-translator.loveyouall.qzz.io/

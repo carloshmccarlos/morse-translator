@@ -1,0 +1,80 @@
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=IBM+Plex+Mono:wght@400;500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --color-text-main: #262626;      /* neutral-800 */
+  --color-text-muted: #6b7280;     /* neutral-500 */
+  --color-text-title: #92400e;     /* amber-800 */
+  --color-text-h1: #451a03;        /* amber-950 */
+  --color-bg-panel: rgba(255, 255, 255, 0.75);
+  --color-border-panel: rgba(217, 119, 6, 0.15); /* amber-600/15 */
+  --color-bg-input: rgba(245, 245, 245, 0.5);
+  --color-border-input: rgba(217, 119, 6, 0.2);
+}
+
+html.dark {
+  color-scheme: dark;
+  --color-text-main: #fef3c7;      /* amber-100 */
+  --color-text-muted: rgba(254, 243, 199, 0.6); /* amber-100/60 */
+  --color-text-title: #fde68a;     /* amber-200 */
+  --color-text-h1: #fef3c7;        /* amber-100 */
+  --color-bg-panel: rgba(18, 12, 4, 0.85);
+  --color-border-panel: rgba(251, 191, 36, 0.2);
+  --color-bg-input: rgba(0, 0, 0, 0.35);
+  --color-border-input: rgba(252, 211, 77, 0.25);
+}
+
+body {
+  @apply min-h-screen font-body antialiased transition-colors duration-200;
+  color: var(--color-text-main);
+  background-image:
+    radial-gradient(circle at 14% 10%, rgba(245, 158, 11, 0.06), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(16, 185, 129, 0.06), transparent 24%),
+    linear-gradient(115deg, #fdfbfa 0%, #f7f4ec 50%, #eeebe0 100%);
+}
+
+html.dark body {
+  background-image:
+    radial-gradient(circle at 14% 10%, rgba(255, 183, 66, 0.12), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(0, 217, 166, 0.12), transparent 24%),
+    linear-gradient(115deg, #050201 0%, #0f0903 50%, #050201 100%);
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+.panel {
+  @apply rounded-2xl p-5 backdrop-blur transition-all duration-200;
+  border: 1px solid var(--color-border-panel);
+  background-color: var(--color-bg-panel);
+}
+
+html.dark .panel {
+  @apply shadow-neon;
+}
+
+.section-title {
+  @apply font-display text-lg tracking-[0.16em] uppercase;
+  color: var(--color-text-title);
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(217, 119, 6, 0.25);
+}
+
+html.dark .glow-text {
+  text-shadow: 0 0 24px rgba(255, 179, 0, 0.5);
+}
+
+.signal-dot {
+  @apply h-3 w-3 rounded-full bg-neutral-300 transition-all dark:bg-neutral-800;
+}
+
+.signal-dot.active {
+  @apply bg-accent shadow-[0_0_18px_rgba(0,217,166,0.9)];
+}

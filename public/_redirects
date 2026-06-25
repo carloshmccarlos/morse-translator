@@ -1,0 +1,3 @@
+# Cloudflare SPA fallback for specific pages to avoid redirect loops
+/about /index.html 200
+/faq /index.html 200
