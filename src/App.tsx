@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { BrandHeader } from "./components/BrandHeader";
 import { ToastContainer } from "./components/ToastContainer";
 import { useAudioRecorder } from "./hooks/useAudioRecorder";
 import { useBatchTranslation } from "./hooks/useBatchTranslation";
-import { useDownloads } from "./hooks/useDownloads";
+import { useCurrentDownloadUrls, useBatchDownloadUrls } from "./hooks/useDownloads";
 import { useMorsePlayer } from "./hooks/useMorsePlayer";
 import { useToast } from "./hooks/useToast";
 import { useTranslation } from "./hooks/useTranslation";
@@ -16,6 +16,17 @@ import { LearningModePanel } from "./components/LearningModePanel";
 import type { TranslationRow } from "./types/domain";
 
 function TranslatorPage() {
+  useEffect(() => {
+    document.title = "Morse Code Translator Audio | MorseAI — Convert Voice to Morse Code Free";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        "Free AI morse code translator — record your voice or upload audio (WAV/MP3/M4A) to get instant Morse code output. Play as tone, blink as light, batch translate files, or download .wav. No signup needed."
+      );
+    }
+  }, []);
+
   const { toasts, notify, dismiss } = useToast();
   const recorder = useAudioRecorder({ maxSeconds: 30 });
   const player = useMorsePlayer();
@@ -23,7 +34,6 @@ function TranslatorPage() {
 
   const translation = useTranslation();
   const batch = useBatchTranslation(notify);
-  const { makeCurrentHandlers, makeBatchHandlers } = useDownloads(notify);
 
   // Layout Tab selection
   const [activeTab, setActiveTab] = useState<"translator" | "batch" | "lamp" | "learning">("translator");
@@ -57,20 +67,14 @@ function TranslatorPage() {
     }
   }
 
-  function getCurrentTranslationRows(): TranslationRow[] {
-    const { transcript, morseOutput } = translation;
-    if (!transcript.trim() || !morseOutput.trim()) return [];
-    return [{ id: "current-translation", text: transcript.trim(), morse: morseOutput.trim() }];
-  }
-
   const isBusy = translation.isBusy || batch.isBusy;
 
-  const currentHandlers = makeCurrentHandlers(
-    getCurrentTranslationRows,
+  const currentUrls = useCurrentDownloadUrls(
+    translation.transcript,
     translation.morseOutput,
     wpm
   );
-  const batchHandlers = makeBatchHandlers(batch.batchRows);
+  const batchUrls = useBatchDownloadUrls(batch.batchRows);
 
   // Format record timer
   const recordSecs = String(recorder.elapsedSeconds).padStart(2, "0");
@@ -355,40 +359,52 @@ function TranslatorPage() {
 
                   {/* Export and download files */}
                   <div className="grid gap-2 grid-cols-3 text-3xs sm:text-2xs font-semibold">
-                    <button
-                      type="button"
-                      onClick={currentHandlers.onDownloadTxt}
-                      disabled={!translation.morseOutput}
-                      className="rounded-lg bg-bg-input hover:bg-neutral-200 dark:hover:bg-black/50 text-text-main disabled:opacity-40 py-2 text-center transition"
+                    <a
+                      href={currentUrls.txtUrl || undefined}
+                      download="morse-output.txt"
+                      onClick={() => notify("TXT export downloaded.")}
+                      className={[
+                        "rounded-lg bg-bg-input hover:bg-neutral-200 dark:hover:bg-black/50 text-text-main py-2 text-center transition flex items-center justify-center",
+                        !currentUrls.txtUrl ? "opacity-40 pointer-events-none" : ""
+                      ].join(" ")}
                     >
                       📂 Export TXT
-                    </button>
-                    <button
-                      type="button"
-                      onClick={currentHandlers.onDownloadCsv}
-                      disabled={!translation.morseOutput}
-                      className="rounded-lg bg-bg-input hover:bg-neutral-200 dark:hover:bg-black/50 text-text-main disabled:opacity-40 py-2 text-center transition"
+                    </a>
+                    <a
+                      href={currentUrls.csvUrl || undefined}
+                      download="morse-output.csv"
+                      onClick={() => notify("CSV export downloaded.")}
+                      className={[
+                        "rounded-lg bg-bg-input hover:bg-neutral-200 dark:hover:bg-black/50 text-text-main py-2 text-center transition flex items-center justify-center",
+                        !currentUrls.csvUrl ? "opacity-40 pointer-events-none" : ""
+                      ].join(" ")}
                     >
                       📂 Export CSV
-                    </button>
-                    <button
-                      type="button"
-                      onClick={currentHandlers.onDownloadXlsx}
-                      disabled={!translation.morseOutput}
-                      className="rounded-lg bg-bg-input hover:bg-neutral-200 dark:hover:bg-black/50 text-text-main disabled:opacity-40 py-2 text-center transition"
+                    </a>
+                    <a
+                      href={currentUrls.xlsxUrl || undefined}
+                      download="morse-output.xlsx"
+                      onClick={() => notify("Excel export downloaded.")}
+                      className={[
+                        "rounded-lg bg-bg-input hover:bg-neutral-200 dark:hover:bg-black/50 text-text-main py-2 text-center transition flex items-center justify-center",
+                        !currentUrls.xlsxUrl ? "opacity-40 pointer-events-none" : ""
+                      ].join(" ")}
                     >
                       📂 Export Excel
-                    </button>
+                    </a>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={currentHandlers.onDownloadAudio}
-                    disabled={!translation.morseOutput}
-                    className="w-full rounded-lg bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-text-main disabled:opacity-40 py-2.5 text-xs font-semibold transition"
+                  <a
+                    href={currentUrls.wavUrl || undefined}
+                    download="morse-output.wav"
+                    onClick={() => notify("WAV downloaded.")}
+                    className={[
+                      "w-full rounded-lg bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-text-main py-2.5 text-xs font-semibold transition flex items-center justify-center",
+                      !currentUrls.wavUrl ? "opacity-40 pointer-events-none" : ""
+                    ].join(" ")}
                   >
                     📥 Download .wav
-                  </button>
+                  </a>
                 </div>
               </div>
             </section>
@@ -494,9 +510,10 @@ function TranslatorPage() {
               onBatchInputChange={batch.setBatchInput}
               onBatchFileSelected={batch.handleBatchFileSelected}
               onTranslateParagraphs={batch.handleTranslateParagraphs}
-              onDownloadTxt={batchHandlers.onDownloadTxt}
-              onDownloadCsv={batchHandlers.onDownloadCsv}
-              onDownloadXlsx={batchHandlers.onDownloadXlsx}
+              txtUrl={batchUrls.txtUrl}
+              csvUrl={batchUrls.csvUrl}
+              xlsxUrl={batchUrls.xlsxUrl}
+              onNotify={notify}
             />
           </div>
         )}

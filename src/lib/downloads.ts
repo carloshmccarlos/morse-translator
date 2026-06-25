@@ -3,20 +3,7 @@ import type { TranslationRow } from "../types/domain";
 const XLSX_MIME =
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-export function downloadTextFile(
-  filename: string,
-  text: string,
-  mimeType = "text/plain;charset=utf-8"
-): void {
-  const blob = new Blob([text], { type: mimeType });
-  triggerDownload(blob, filename);
-}
-
-export function downloadBlob(filename: string, blob: Blob): void {
-  triggerDownload(blob, filename);
-}
-
-export function downloadTranslationTxt(filename: string, rows: TranslationRow[]): void {
+export function generateTranslationTxtBlob(rows: TranslationRow[]): Blob {
   const text = rows
     .map(
       (row, index) =>
@@ -24,39 +11,29 @@ export function downloadTranslationTxt(filename: string, rows: TranslationRow[])
     )
     .join("\n\n====================\n\n");
 
-  downloadTextFile(filename, text);
+  return new Blob([text], { type: "text/plain;charset=utf-8" });
 }
 
-export function downloadTranslationCsv(filename: string, rows: TranslationRow[]): void {
+export function generateTranslationCsvBlob(rows: TranslationRow[]): Blob {
   const records = toExportRecords(rows);
   const header: ExportColumn[] = ["Index", "Original Text", "Morse Code"];
   const lines = [header, ...records.map((record) => header.map((key) => record[key]))].map(
     (cells) => cells.map(escapeCsvCell).join(",")
   );
   const csv = lines.join("\n");
-  downloadTextFile(filename, csv, "text/csv;charset=utf-8");
+  return new Blob([csv], { type: "text/csv;charset=utf-8" });
 }
 
-export async function downloadTranslationXlsx(
-  filename: string,
+export async function generateTranslationXlsxBlob(
   rows: TranslationRow[]
-): Promise<void> {
+): Promise<Blob> {
   const { utils, write } = await import("xlsx");
   const worksheet = utils.json_to_sheet(toExportRecords(rows));
   const workbook = utils.book_new();
   utils.book_append_sheet(workbook, worksheet, "Translations");
 
   const buffer = write(workbook, { bookType: "xlsx", type: "array" });
-  downloadBlob(filename, new Blob([buffer], { type: XLSX_MIME }));
-}
-
-function triggerDownload(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
+  return new Blob([buffer], { type: XLSX_MIME });
 }
 
 function toExportRecords(rows: TranslationRow[]) {

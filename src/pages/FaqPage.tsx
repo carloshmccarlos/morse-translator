@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 interface FaqItem {
@@ -176,6 +176,17 @@ function AccordionItem({ item, isOpen, onToggle }: {
 }
 
 export function FaqPage() {
+  useEffect(() => {
+    document.title = "MorseAI FAQ — Audio Morse Code Translator Help";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        "Frequently Asked Questions about MorseAI. Learn how to convert voice or audio to Morse code, what audio formats are supported, how reverse translation works, and what WPM settings mean."
+      );
+    }
+  }, []);
+
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [query, setQuery] = useState("");

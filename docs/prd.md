@@ -15,6 +15,7 @@ MorseAI is a browser app that converts speech audio into Morse code.
 - Support batch text translation and exports
 - Provide Morse playback and visual signal modes
 - Provide static SEO/GEO content pages (About, FAQ) to help search crawlers and AI search agents find and cite MorseAI.
+- Optimize route-specific dynamic metadata (browser title and meta description) and implement a single-h1 heading structure across all route segments to comply with Google SEO Starter Guide best practices.
 - Provide full Light Mode and Dark Mode support with a user-friendly toggle in the navigation or settings.
 - Integrate Google Analytics tracking using `gtag.js` loaded inside the static HTML shell.
 
@@ -33,3 +34,5 @@ MorseAI is a browser app that converts speech audio into Morse code.
 - Keep the interface concise and low-chatter
 - All decorative overlay panels and blurred background spheres must not block mouse interactions (use `pointer-events-none`).
 - Title and text colors across all pages must be theme-responsive using semantic styling, ensuring high readability in both light and dark modes.
+- Export and download functions must be fully declarative (native HTML anchors with href to Blob/Data URLs) to comply with Google Safe Browsing policies and prevent HTML Smuggling false positives.
+

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const FEATURES = [
@@ -90,6 +91,17 @@ const MORSE_HISTORY = [
 ];
 
 export function AboutPage() {
+  useEffect(() => {
+    document.title = "About MorseAI — AI Morse Code Audio Translator";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        "Learn about MorseAI, a free AI-powered online tool for converting speech and audio files to Morse code. Explore the history of Morse code and its common use cases."
+      );
+    }
+  }, []);
+
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8">
 

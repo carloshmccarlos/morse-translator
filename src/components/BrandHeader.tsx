@@ -1,6 +1,10 @@
+import { useLocation } from "react-router-dom";
 import { NavBar } from "./NavBar";
 
 export function BrandHeader() {
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
+
   return (
     <header className="panel relative overflow-hidden">
       <div className="absolute -top-24 right-8 h-40 w-40 rounded-full bg-amber-300/10 blur-3xl pointer-events-none" />
@@ -13,9 +17,15 @@ export function BrandHeader() {
             <p className="font-display text-xs uppercase tracking-[0.22em] text-text-muted">
               MorseAI Console
             </p>
-            <h1 className="mt-1 font-display text-3xl text-text-h1 glow-text sm:text-4xl">
-              Morse Code Translator Audio
-            </h1>
+            {isHome ? (
+              <h1 className="mt-1 font-display text-3xl text-text-h1 glow-text sm:text-4xl">
+                Morse Code Translator Audio
+              </h1>
+            ) : (
+              <p className="mt-1 font-display text-3xl text-text-h1 glow-text sm:text-4xl font-semibold">
+                Morse Code Translator Audio
+              </p>
+            )}
           </div>
         </div>
         <NavBar />

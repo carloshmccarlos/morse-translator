@@ -9,9 +9,10 @@ interface BatchTranslationPanelProps {
   onBatchInputChange: (next: string) => void;
   onBatchFileSelected: (file: File | null) => void;
   onTranslateParagraphs: () => void;
-  onDownloadTxt: () => void;
-  onDownloadCsv: () => void;
-  onDownloadXlsx: () => void;
+  txtUrl: string | null;
+  csvUrl: string | null;
+  xlsxUrl: string | null;
+  onNotify: (message: string) => void;
 }
 
 export function BatchTranslationPanel(props: BatchTranslationPanelProps) {
@@ -88,30 +89,39 @@ export function BatchTranslationPanel(props: BatchTranslationPanelProps) {
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-amber-500/5 dark:border-amber-300/5 pt-4">
-        <button
-          type="button"
-          className="rounded-md bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-300/20 dark:text-amber-100 dark:hover:bg-amber-300/30 disabled:opacity-40 px-4 py-2 text-xs font-semibold transition"
-          onClick={props.onDownloadTxt}
-          disabled={!props.rows.length}
+        <a
+          href={props.txtUrl || undefined}
+          download="morse-batch.txt"
+          onClick={() => props.onNotify("Batch TXT export downloaded.")}
+          className={[
+            "rounded-md bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-300/20 dark:text-amber-100 dark:hover:bg-amber-300/30 px-4 py-2 text-xs font-semibold transition flex items-center justify-center",
+            !props.txtUrl ? "opacity-40 pointer-events-none" : ""
+          ].join(" ")}
         >
           Export TXT
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-300/20 dark:text-amber-100 dark:hover:bg-amber-300/30 disabled:opacity-40 px-4 py-2 text-xs font-semibold transition"
-          onClick={props.onDownloadCsv}
-          disabled={!props.rows.length}
+        </a>
+        <a
+          href={props.csvUrl || undefined}
+          download="morse-batch.csv"
+          onClick={() => props.onNotify("Batch CSV export downloaded.")}
+          className={[
+            "rounded-md bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-300/20 dark:text-amber-100 dark:hover:bg-amber-300/30 px-4 py-2 text-xs font-semibold transition flex items-center justify-center",
+            !props.csvUrl ? "opacity-40 pointer-events-none" : ""
+          ].join(" ")}
         >
           Export CSV
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-300/20 dark:text-amber-100 dark:hover:bg-amber-300/30 disabled:opacity-40 px-4 py-2 text-xs font-semibold transition"
-          onClick={props.onDownloadXlsx}
-          disabled={!props.rows.length}
+        </a>
+        <a
+          href={props.xlsxUrl || undefined}
+          download="morse-batch.xlsx"
+          onClick={() => props.onNotify("Batch Excel export downloaded.")}
+          className={[
+            "rounded-md bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-300/20 dark:text-amber-100 dark:hover:bg-amber-300/30 px-4 py-2 text-xs font-semibold transition flex items-center justify-center",
+            !props.xlsxUrl ? "opacity-40 pointer-events-none" : ""
+          ].join(" ")}
         >
           Export Excel
-        </button>
+        </a>
       </div>
 
       <div className="mt-5 max-h-[22rem] space-y-3 overflow-y-auto pr-1">
