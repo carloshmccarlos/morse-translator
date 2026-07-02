@@ -4,6 +4,7 @@ import { morseToToneSegments } from "../lib/morseTiming";
 interface SignalLampPanelProps {
   morse: string;
   wpm: number;
+  lampColor?: string;
 }
 
 export function SignalLampPanel(props: SignalLampPanelProps) {
@@ -11,6 +12,31 @@ export function SignalLampPanel(props: SignalLampPanelProps) {
   const [isOn, setIsOn] = useState(false);
   const [step, setStep] = useState(0);
   const timersRef = useRef<number[]>([]);
+
+  const colorMap: Record<string, { bg: string; border: string; shadow: string }> = {
+    emerald: {
+      bg: "bg-accent",
+      border: "border-accent",
+      shadow: "shadow-[0_0_22px_rgba(0,217,166,0.9)]",
+    },
+    amber: {
+      bg: "bg-amber-500",
+      border: "border-amber-500",
+      shadow: "shadow-[0_0_22px_rgba(245,158,11,0.9)]",
+    },
+    rose: {
+      bg: "bg-rose-500",
+      border: "border-rose-500",
+      shadow: "shadow-[0_0_22px_rgba(244,63,94,0.9)]",
+    },
+    sky: {
+      bg: "bg-sky-500",
+      border: "border-sky-500",
+      shadow: "shadow-[0_0_22px_rgba(14,165,233,0.9)]",
+    },
+  };
+
+  const activeColor = colorMap[props.lampColor || "emerald"] || colorMap.emerald;
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((id) => window.clearTimeout(id));
@@ -71,7 +97,7 @@ export function SignalLampPanel(props: SignalLampPanelProps) {
             className={[
               "h-3 w-3 rounded-full transition-all",
               isOn
-                ? "bg-accent shadow-[0_0_18px_rgba(0,217,166,0.9)]"
+                ? `${activeColor.bg} ${activeColor.shadow.replace("22px", "18px")}`
                 : "bg-neutral-300 dark:bg-neutral-700",
             ].join(" ")}
           />
@@ -108,7 +134,7 @@ export function SignalLampPanel(props: SignalLampPanelProps) {
             className={[
               "h-7 w-7 rounded-full transition-all duration-150 border-2",
               isOn
-                ? "bg-accent border-accent shadow-[0_0_22px_rgba(0,217,166,0.9)] scale-110"
+                ? `${activeColor.bg} ${activeColor.border} ${activeColor.shadow} scale-110`
                 : "bg-neutral-200 border-neutral-300 dark:bg-neutral-800 dark:border-amber-300/10",
             ].join(" ")}
           />

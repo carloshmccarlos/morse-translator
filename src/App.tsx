@@ -13,7 +13,6 @@ import { FaqPage } from "./pages/FaqPage";
 import { BatchTranslationPanel } from "./components/BatchTranslationPanel";
 import { SignalLampPanel } from "./components/SignalLampPanel";
 import { LearningModePanel } from "./components/LearningModePanel";
-import type { TranslationRow } from "./types/domain";
 
 function TranslatorPage() {
   useEffect(() => {
@@ -30,7 +29,36 @@ function TranslatorPage() {
   const { toasts, notify, dismiss } = useToast();
   const recorder = useAudioRecorder({ maxSeconds: 30 });
   const player = useMorsePlayer();
-  const [wpm, setWpm] = useState(18);
+
+  // Settings states with localStorage persistence
+  const [toneFrequency, setToneFrequency] = useState<number>(() => {
+    const saved = localStorage.getItem("setting_frequency");
+    return saved ? Number(saved) : 650;
+  });
+  const [toneVolume, setToneVolume] = useState<number>(() => {
+    const saved = localStorage.getItem("setting_volume");
+    return saved ? Number(saved) : 0.25; // 25% default volume is comfortable
+  });
+  const [lampColor, setLampColor] = useState<string>(() => {
+    return localStorage.getItem("setting_lamp_color") || "emerald";
+  });
+  const [wpm, setWpm] = useState<number>(() => {
+    const saved = localStorage.getItem("setting_wpm");
+    return saved ? Number(saved) : 18;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("setting_frequency", String(toneFrequency));
+  }, [toneFrequency]);
+  useEffect(() => {
+    localStorage.setItem("setting_volume", String(toneVolume));
+  }, [toneVolume]);
+  useEffect(() => {
+    localStorage.setItem("setting_lamp_color", lampColor);
+  }, [lampColor]);
+  useEffect(() => {
+    localStorage.setItem("setting_wpm", String(wpm));
+  }, [wpm]);
 
   const translation = useTranslation();
   const batch = useBatchTranslation(notify);
@@ -39,6 +67,8 @@ function TranslatorPage() {
   const [activeTab, setActiveTab] = useState<"translator" | "batch" | "lamp" | "learning">("translator");
   // Audio Input mode ('upload' | 'record')
   const [audioInputType, setAudioInputType] = useState<"upload" | "record">("upload");
+  // Drag and drop state
+  const [isDragging, setIsDragging] = useState(false);
   // Modals state
   const [showSettings, setShowSettings] = useState(false);
   const [showFullGuide, setShowFullGuide] = useState(false);
@@ -80,16 +110,16 @@ function TranslatorPage() {
   const recordSecs = String(recorder.elapsedSeconds).padStart(2, "0");
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
+    <main className="flex flex-col gap-6 lg:flex-row">
       {/* 1. Left Sidebar Navigation */}
       <aside className="w-full shrink-0 lg:w-60 flex flex-col gap-4">
         {/* Navigation list */}
         <div className="panel flex flex-col gap-1 bg-white/70 dark:bg-panel/80">
           {[
-            { id: "translator", label: "1 Translator", icon: "🎙️" },
-            { id: "batch", label: "2 Batch Deck", icon: "📁" },
-            { id: "lamp", label: "3 Visual Lamp", icon: "💡" },
-            { id: "learning", label: "4 Learning Mode", icon: "🎓" },
+            { id: "translator", label: "Translator", icon: "🎙️" },
+            { id: "batch", label: "Batch Deck", icon: "📁" },
+            { id: "lamp", label: "Visual Lamp", icon: "💡" },
+            { id: "learning", label: "Learning Mode", icon: "🎓" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -139,7 +169,7 @@ function TranslatorPage() {
       </aside>
 
       {/* 2. Main Right Content Area */}
-      <main className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0">
         {activeTab === "translator" && (
           <div className="flex flex-col gap-6">
             {/* 1. Translator Main Card */}
@@ -154,7 +184,7 @@ function TranslatorPage() {
                   </p>
                 </div>
                 <div className="rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1 text-2xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                  ★ Phase 3 Ready
+                  🔒 Local & Secure
                 </div>
               </div>
 
@@ -194,9 +224,31 @@ function TranslatorPage() {
                     </button>
                   </div>
 
-                  {/* Upload UI */}
+                  {/* Upload UI with Drag and Drop */}
                   {audioInputType === "upload" && (
-                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-input bg-bg-input p-6">
+                    <div 
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setIsDragging(true);
+                      }}
+                      onDragLeave={() => {
+                        setIsDragging(false);
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setIsDragging(false);
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) {
+                          translation.handleFileSelected(file);
+                        }
+                      }}
+                      className={[
+                        "flex flex-col items-center justify-center rounded-2xl border border-dashed p-6 transition-all duration-200",
+                        isDragging 
+                          ? "border-amber-500 bg-amber-500/10 dark:border-amber-300 dark:bg-amber-300/10" 
+                          : "border-border-input bg-bg-input"
+                      ].join(" ")}
+                    >
                       <svg className="h-10 w-10 text-amber-600 dark:text-amber-400/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
@@ -231,23 +283,24 @@ function TranslatorPage() {
                         </span>
                       </div>
 
-                      {/* Mock waveform animation */}
+                      {/* Real-time audio responsive waveform */}
                       <div className="h-10 flex items-center justify-center gap-1.5 bg-black/20 dark:bg-black/40 rounded-xl px-4">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((i) => (
-                          <div
-                            key={i}
-                            className={[
-                              "w-1 rounded-full bg-emerald-500 dark:bg-accent transition-all duration-200",
-                              recorder.isRecording
-                                ? i % 3 === 0
-                                  ? "h-8 animate-pulse"
-                                  : i % 2 === 0
-                                  ? "h-6 animate-pulse"
-                                  : "h-4"
-                                : "h-2 opacity-50",
-                            ].join(" ")}
-                          />
-                        ))}
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((i) => {
+                          const scale = 0.4 + 0.6 * Math.sin((i / 15) * Math.PI);
+                          const calculatedHeight = recorder.isRecording 
+                            ? Math.max(8, Math.min(32, Math.round(recorder.volume * 0.32 * scale)))
+                            : 8;
+                          return (
+                            <div
+                              key={i}
+                              style={{ height: `${calculatedHeight}px` }}
+                              className={[
+                                "w-1 rounded-full bg-emerald-500 dark:bg-accent transition-all duration-75",
+                                !recorder.isRecording && "opacity-50",
+                              ].join(" ")}
+                            />
+                          );
+                        })}
                       </div>
 
                       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
@@ -333,7 +386,7 @@ function TranslatorPage() {
                   <div className="grid gap-2 grid-cols-3">
                     <button
                       type="button"
-                      onClick={() => player.play(translation.morseOutput, wpm)}
+                      onClick={() => player.play(translation.morseOutput, wpm, toneFrequency, toneVolume)}
                       disabled={!translation.morseOutput || player.isPlaying}
                       className="flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-40 py-2.5 text-xs font-semibold transition"
                     >
@@ -521,7 +574,7 @@ function TranslatorPage() {
         {/* 4. Visual Morse Lamp tab */}
         {activeTab === "lamp" && (
           <div className="animation-slideInRight">
-            <SignalLampPanel morse={translation.morseOutput} wpm={wpm} />
+            <SignalLampPanel morse={translation.morseOutput} wpm={wpm} lampColor={lampColor} />
           </div>
         )}
 
@@ -536,7 +589,7 @@ function TranslatorPage() {
         <footer className="mt-8 text-center text-xs text-text-muted/70 border-t border-amber-500/5 dark:border-amber-300/5 pt-4">
           Built with MorseAI Console · Reliable · Fast · Private
         </footer>
-      </main>
+      </div>
 
       {/* 3. Settings Modal */}
       {showSettings && (
@@ -551,26 +604,93 @@ function TranslatorPage() {
             <h3 className="section-title border-b border-amber-500/10 dark:border-amber-300/10 pb-3">
               Application Settings
             </h3>
+            
             <div className="mt-4 flex flex-col gap-4 text-sm text-text-main">
-              <div className="flex flex-col gap-1">
-                <span className="font-semibold text-text-title">AI Speech Recognition</span>
-                <span className="text-xs text-text-muted">
-                  Powered by Deepgram Nova-2 models for industry-leading speed and accuracy.
-                </span>
+              {/* Default WPM */}
+              <div className="flex flex-col gap-1.5">
+                <span className="font-semibold text-text-title">Default Speed (WPM)</span>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="5"
+                    max="40"
+                    value={wpm}
+                    onChange={(e) => setWpm(Number(e.target.value))}
+                    className="w-full accent-amber-600 dark:accent-amber-400"
+                  />
+                  <span className="w-8 text-center rounded bg-amber-500/10 dark:bg-black/30 border border-amber-500/20 dark:border-amber-300/10 py-0.5 text-xs font-mono font-bold text-text-title">
+                    {wpm}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-semibold text-text-title">Rate Limiting</span>
-                <span className="text-xs text-text-muted">
-                  Safe limits are set to 5 requests per minute per IP address.
-                </span>
+
+              {/* Tone Frequency (Pitch) */}
+              <div className="flex flex-col gap-1.5">
+                <span className="font-semibold text-text-title">Tone Pitch / Frequency (Hz)</span>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="400"
+                    max="1000"
+                    step="50"
+                    value={toneFrequency}
+                    onChange={(e) => setToneFrequency(Number(e.target.value))}
+                    className="w-full accent-amber-600 dark:accent-amber-400"
+                  />
+                  <span className="w-12 text-center rounded bg-amber-500/10 dark:bg-black/30 border border-amber-500/20 dark:border-amber-300/10 py-0.5 text-xs font-mono font-bold text-text-title">
+                    {toneFrequency}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-semibold text-text-title">Local Security</span>
-                <span className="text-xs text-text-muted">
-                  All text translation and file sheet exporting happen 100% locally in your browser.
-                </span>
+
+              {/* Tone Volume */}
+              <div className="flex flex-col gap-1.5">
+                <span className="font-semibold text-text-title">Tone Volume</span>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="0.05"
+                    max="0.5"
+                    step="0.05"
+                    value={toneVolume}
+                    onChange={(e) => setToneVolume(Number(e.target.value))}
+                    className="w-full accent-amber-600 dark:accent-amber-400"
+                  />
+                  <span className="w-10 text-center rounded bg-amber-500/10 dark:bg-black/30 border border-amber-500/20 dark:border-amber-300/10 py-0.5 text-xs font-mono font-bold text-text-title">
+                    {Math.round(toneVolume * 200)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Lamp Color */}
+              <div className="flex flex-col gap-1.5">
+                <span className="font-semibold text-text-title">Visual Lamp Color</span>
+                <div className="flex gap-2">
+                  {[
+                    { id: "emerald", label: "Emerald", colorClass: "bg-accent" },
+                    { id: "amber", label: "Amber", colorClass: "bg-amber-500" },
+                    { id: "rose", label: "Rose", colorClass: "bg-rose-500" },
+                    { id: "sky", label: "Sky", colorClass: "bg-sky-500" },
+                  ].map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setLampColor(c.id)}
+                      className={[
+                        "flex-1 py-1.5 px-1 rounded-lg text-2xs font-semibold border transition-all flex flex-col items-center gap-1",
+                        lampColor === c.id
+                          ? "border-amber-500 bg-amber-500/10 dark:border-amber-300 dark:bg-amber-300/10 text-text-title"
+                          : "border-border-input hover:bg-bg-input text-text-muted",
+                      ].join(" ")}
+                    >
+                      <span className={`h-3.5 w-3.5 rounded-full ${c.colorClass}`} />
+                      <span>{c.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
+
             <button
               onClick={() => setShowSettings(false)}
               className="mt-6 w-full rounded-lg bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-300/15 dark:hover:bg-amber-300/25 dark:text-text-main py-2.5 text-xs font-semibold transition"
@@ -650,7 +770,7 @@ function TranslatorPage() {
       )}
 
       <ToastContainer toasts={toasts} onDismiss={dismiss} />
-    </div>
+    </main>
   );
 }
 

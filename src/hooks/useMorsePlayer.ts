@@ -41,7 +41,7 @@ export function useMorsePlayer() {
   }, []);
 
   const play = useCallback(
-    async (morse: string, wpm: number, frequencyHz = 650) => {
+    async (morse: string, wpm: number, frequencyHz = 650, volume = 0.15) => {
       if (!morse.trim()) return;
 
       stop();
@@ -49,13 +49,14 @@ export function useMorsePlayer() {
       contextRef.current = context;
 
       const gain = context.createGain();
-      gain.gain.value = 0.15;
+      gain.gain.value = volume;
       gain.connect(context.destination);
 
       const startAt = context.currentTime + 0.03;
       let cursor = startAt;
       const segments = morseToToneSegments(morse, wpm);
       let lastOscillator: OscillatorNode | null = null;
+
 
       segments.forEach((segment) => {
         if (segment.on) {

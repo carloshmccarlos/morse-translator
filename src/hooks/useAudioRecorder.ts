@@ -15,6 +15,11 @@ export function useAudioRecorder(options: RecorderOptions = {}) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [error, setError] = useState<string>("");
+  const [volume, setVolume] = useState(0);
+
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!isRecording) return;
@@ -33,6 +38,17 @@ export function useAudioRecorder(options: RecorderOptions = {}) {
   }, []);
 
   const stopRecording = useCallback(() => {
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      void audioCtxRef.current.close();
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+    setVolume(0);
+
     if (!mediaRecorderRef.current) return;
     if (mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop();
@@ -48,11 +64,44 @@ export function useAudioRecorder(options: RecorderOptions = {}) {
     setError("");
     setAudioBlob(null);
     setElapsedSeconds(0);
+    setVolume(0);
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
       chunksRef.current = [];
+
+      // Setup Web Audio Analyser
+      try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const audioCtx = new AudioContextClass();
+        audioCtxRef.current = audioCtx;
+        const source = audioCtx.createMediaStreamSource(stream);
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64; // small size for simple volume levels
+        source.connect(analyser);
+        analyserRef.current = analyser;
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        const updateVolume = () => {
+          if (!analyserRef.current) return;
+          analyserRef.current.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < bufferLength; i++) {
+            sum += dataArray[i];
+          }
+          const average = sum / bufferLength;
+          // Map average (0-255) to 0-100 scale
+          const volMapped = Math.min(100, Math.round((average / 255) * 100));
+          setVolume(volMapped);
+          animationFrameIdRef.current = requestAnimationFrame(updateVolume);
+        };
+        animationFrameIdRef.current = requestAnimationFrame(updateVolume);
+      } catch (audioErr) {
+        console.warn("Failed to initialize audio analyser for waveform:", audioErr);
+      }
 
       const recorder = new MediaRecorder(stream);
       mediaRecorderRef.current = recorder;
@@ -94,6 +143,8 @@ export function useAudioRecorder(options: RecorderOptions = {}) {
     error,
     isRecording,
     startRecording,
-    stopRecording
+    stopRecording,
+    volume
   };
 }
+

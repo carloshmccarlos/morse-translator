@@ -26,6 +26,9 @@ export function BrandHeader() {
                 Morse Code Translator Audio
               </p>
             )}
+            <p className="mt-2 text-xs text-text-muted max-w-xl leading-relaxed">
+              Convert voice and audio files into Morse code. Play, blink, and export in real-time.
+            </p>
           </div>
         </div>
         <NavBar />

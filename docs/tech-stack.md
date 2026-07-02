@@ -7,7 +7,7 @@
 - TypeScript
 - Tailwind CSS (configured for selector-based dark mode using `.dark` class)
 - CSS Custom Properties (`:root` / `html.dark`) mapped to Tailwind configuration for theme-responsive styling (`text-text-main`, `text-text-muted`, `text-text-title`, `text-text-h1`)
-- Web Audio API for tone playback
+- Web Audio API for tone playback and AnalyserNode for real-time microphone volume analysis
 - Google Analytics (gtag.js) for page traffic measurement
 
 ## Backend
