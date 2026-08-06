@@ -1,0 +1,6 @@
+# pnpm v11 configuration (workspace-level settings)
+# In pnpm v11, `verifyDepsBeforeRun` defaults to "install", which makes every
+# `pnpm run`/`pnpm exec` implicitly trigger `pnpm install` when node_modules is
+# out of sync. This setting is ONLY read from pnpm-workspace.yaml (writing it
+# to .npmrc has no effect in v11).
+verifyDepsBeforeRun: false
