@@ -185,6 +185,29 @@ export function FaqPage() {
         "Frequently Asked Questions about MorseAI. Learn how to convert voice or audio to Morse code, what audio formats are supported, how reverse translation works, and what WPM settings mean."
       );
     }
+
+    // Inject page-level FAQPage structured data that mirrors the visible
+    // questions on this page (search engines trust FAQs only when the text
+    // is also present in the DOM).
+    const FAQ_JSONLD_ID = "faq-page-jsonld";
+    let script = document.getElementById(FAQ_JSONLD_ID) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.id = FAQ_JSONLD_ID;
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQ_CATEGORIES.flatMap((cat) =>
+        cat.items.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        }))
+      ),
+    });
   }, []);
 
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());

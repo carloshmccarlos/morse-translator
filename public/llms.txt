@@ -3,12 +3,13 @@
 > MorseAI is a free, browser-based tool that uses AI speech recognition to convert
 > voice recordings and audio files directly into Morse code. No registration required.
 > Built for amateur radio enthusiasts, educators, escape room designers, and hobbyists.
+> Full details (all 23 FAQs, character set, timing reference): /llms-full.txt
 
 ## Pages
 
 - [Translator](https://ai-morse-code-translator.loveyouall.qzz.io/): Main tool — upload audio or record voice to get Morse code output with playback and export.
 - [About](https://ai-morse-code-translator.loveyouall.qzz.io/about): Features overview, use cases, Morse code character reference table, history timeline, and tech stack.
-- [FAQ](https://ai-morse-code-translator.loveyouall.qzz.io/faq): 26 answered questions across 5 categories — Getting Started, Audio, Morse Code, Features, Privacy.
+- [FAQ](https://ai-morse-code-translator.loveyouall.qzz.io/faq): 23 answered questions across 5 categories — Getting Started, Audio, Morse Code, Features, Privacy.
 
 ## What MorseAI Does
 

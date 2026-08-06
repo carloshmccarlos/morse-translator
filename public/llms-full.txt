@@ -1,0 +1,171 @@
+# MorseAI — AI-Powered Audio Morse Code Translator
+
+> MorseAI is a free, browser-based tool that uses AI speech recognition to convert voice
+> recordings and audio files directly into Morse code. No registration, no account, no cost.
+> Built for amateur radio operators, educators, escape room designers, ARG creators, and hobbyists.
+> Full details below; a condensed version is available at /llms.txt.
+
+## Pages
+
+- Translator (home): https://ai-morse-code-translator.loveyouall.qzz.io/ — upload audio or record voice to get instant Morse code output with tone playback, visual lamp, batch translation, and WAV export.
+- About: https://ai-morse-code-translator.loveyouall.qzz.io/about — features, use cases, Morse code character reference, history timeline, tech stack.
+- FAQ: https://ai-morse-code-translator.loveyouall.qzz.io/faq — 23 answered questions across 5 categories (Getting Started, Audio & Recording, Morse Code, Features, Privacy & Data).
+
+## What MorseAI Does
+
+MorseAI accepts spoken audio (microphone recording or uploaded file) and produces:
+
+- International Morse code text output (dots, dashes, "/" word separators)
+- Audible Morse tone playback at adjustable WPM (5–40 words per minute)
+- Visual signal lamp that blinks the Morse pattern
+- Downloadable .wav audio file of the Morse signal
+- Exportable results as .txt, .csv, or .xlsx
+
+The unique value: MorseAI is the only free tool that converts **speech/audio directly to Morse code**
+end-to-end — most other tools only convert typed text.
+
+## Core Workflow
+
+1. Upload an audio file (.wav .mp3 .m4a .ogg .webm, max 3MB) **or** click "Start Record" to use your microphone (up to 30 seconds).
+2. AI speech recognition (Deepgram Nova-2) transcribes the audio to text.
+3. The text is converted to Morse code using the ITU-R M.1677 international standard.
+4. Play as audio tone, watch as a visual lamp signal, or export as TXT / CSV / Excel / WAV.
+
+## Key Features
+
+- **Voice-to-Morse**: Record up to 30 seconds of speech → instant Morse code.
+- **Audio Upload**: Accepts WAV, MP3, M4A, OGG, WEBM files up to 3MB per file.
+- **Reverse Translation**: Paste Morse code (dots, dashes, slashes) → get original text instantly.
+- **Batch Translation**: Import .txt, .csv, .xls, or .xlsx files → translate all rows at once, export as TXT/CSV/Excel.
+- **WPM Control**: Adjustable playback speed from 5 to 40 words per minute.
+- **WAV Export**: Download the Morse signal as a standard WAV audio file.
+- **Visual Lamp**: Watch Morse code as a blinking light signal (4 color options).
+- **Learning Mode**: Practice decoding random Morse characters (A–Z, 0–9) with instant feedback.
+- **Punctuation Support**: Full ITU-R standard — . , ? ! / ( ) & : ; = + - _ " @ '
+
+## FAQ (Frequently Asked Questions)
+
+### Getting Started
+
+**Q: What is MorseAI?**
+A: MorseAI is a free, browser-based AI-powered Morse code translator. It converts spoken words and audio files into Morse code using AI speech recognition. No installation or account is needed.
+
+**Q: Is MorseAI free to use?**
+A: Yes — completely free. All features including AI voice transcription, audio upload, batch translation, WAV export, and learning mode are available at no cost and with no account required.
+
+**Q: Does MorseAI work on mobile?**
+A: Yes. MorseAI is a responsive web app that works in any modern browser on desktop, tablet, and mobile. Microphone recording requires a browser with getUserMedia support (Chrome, Firefox, Safari, Edge).
+
+**Q: Do I need to install anything?**
+A: No installation needed. MorseAI runs entirely in your browser. Just open the website and start translating.
+
+### Audio & Recording
+
+**Q: What audio formats does MorseAI support?**
+A: MorseAI accepts WAV, MP3, M4A, OGG, and WEBM audio files up to 3MB per file. For microphone recording, the browser captures audio in WebM/Opus format automatically.
+
+**Q: How long can I record?**
+A: Up to 30 seconds per recording. For longer content, use the audio file upload feature — or use the Batch Translation Deck to process multiple segments at once.
+
+**Q: Why is my microphone not working?**
+A: Check that you have granted microphone permission to the browser. On Chrome: click the lock icon in the address bar → Microphone → Allow. On Safari, go to Settings → Safari → Microphone. Also ensure no other app is exclusively using the microphone.
+
+**Q: How accurate is the AI transcription?**
+A: MorseAI uses Deepgram Nova-2, one of the most accurate speech-to-text models available (97%+ accuracy on clear audio). Accuracy depends on audio quality — speak clearly in a quiet environment and hold the microphone 15–30cm from your mouth for best results.
+
+**Q: Can I upload audio longer than 3MB?**
+A: Currently the limit is 3MB. For longer content, trim your audio using a free tool like Audacity or use the browser's built-in recording feature and submit in 30-second chunks. Batch Translation can combine results.
+
+### Morse Code
+
+**Q: What Morse code standard does MorseAI use?**
+A: MorseAI uses the ITU-R M.1677 International Morse Code standard — the globally recognised standard used by amateur radio operators, military, and maritime services. It covers all 26 letters (A–Z), digits 0–9, and 17 punctuation symbols including . , ? ! / ( ) & : ; = + - _ " @ '
+
+**Q: What does the '/' separator mean in Morse output?**
+A: The slash (/) represents a word boundary in MorseAI's text output. For example: 'HI THERE' becomes '.... .. / - .... . .-. .'. In actual transmission, a word gap is represented by a 7-unit silence between characters.
+
+**Q: Can I translate Morse code back to text?**
+A: Yes. Use the 'Morse Input (Reverse → Text)' field in the Transcript panel. Paste any Morse code using dots (.), dashes (-), spaces between letters, and slashes (/) between words. Click 'Reverse Translate Morse' to decode it to plain text.
+
+**Q: What is WPM and how do I choose the right speed?**
+A: WPM (Words Per Minute) controls the speed of Morse tone playback and WAV export. Guidelines: 5–10 WPM is beginner speed for learning. 13 WPM is the minimum for many amateur radio licences. 20–25 WPM is comfortable for experienced operators. 35–40 WPM is expert/contest speed.
+
+**Q: Does MorseAI support special characters and punctuation?**
+A: Yes. MorseAI supports all ITU-R standard punctuation: period (·−·−·−), comma (−−··−−), question mark (··−−··), exclamation (−·−·−−), slash (−··−·), parentheses, ampersand, colon, semicolon, equals, plus, hyphen, underscore, quote, at-sign, and apostrophe. Characters not in the standard (e.g. accented letters) are silently skipped.
+
+**Q: What is the timing ratio for Morse code?**
+A: International Morse Code uses a 1:3:7 timing ratio. One 'unit' is the duration of a dot. A dash = 3 units. Gap between symbols in the same letter = 1 unit. Gap between letters = 3 units. Gap between words = 7 units. MorseAI follows this standard precisely in both playback and WAV export.
+
+### Features
+
+**Q: How does batch translation work?**
+A: The Batch Translation Deck lets you translate multiple texts at once. You can: (1) Upload a .txt file — each paragraph becomes one row. (2) Upload a .csv, .xls, or .xlsx file — MorseAI looks for a 'text' or 'transcript' column. (3) Paste multiple paragraphs separated by blank lines into the multi-paragraph input. All entries are translated locally using the built-in Morse engine.
+
+**Q: How do I export the Morse code?**
+A: The Morse Output panel has four export buttons: 'Export TXT' (plain text file), 'Export CSV' (spreadsheet-compatible), 'Export Excel' (.xlsx), and 'Download .wav' (audio file). The Batch Translation Deck also has TXT, CSV, and Excel export for all batch rows.
+
+**Q: What is the Visual Morse Lamp?**
+A: The Signal Lamp panel animates a glowing dot that turns on and off following the Morse timing of your translated output. It's useful for visual demonstrations, accessibility applications, and escape room props.
+
+**Q: How does Learning Mode work?**
+A: Learning Mode presents a random Morse code character and asks you to identify the letter or digit. Type your answer (A–Z or 0–9) and click 'Check' to see if you're correct. Click 'Next' to get a new challenge. This trains character recognition — the key skill for reading Morse code by ear.
+
+**Q: Can I copy the Morse output to clipboard?**
+A: Yes. Click the 'Copy' button in the Morse Output panel to copy the full Morse code string to your clipboard. Requires clipboard permission in your browser.
+
+### Privacy & Data
+
+**Q: Is my audio stored or shared?**
+A: Audio is sent to the Deepgram API for transcription over an encrypted HTTPS connection. Deepgram processes the audio and returns the transcript — MorseAI does not store your audio on its own servers. Text translation happens entirely in your browser (no data sent to any server).
+
+**Q: Does MorseAI use cookies or tracking?**
+A: MorseAI uses Umami Analytics (privacy-first, GDPR-compliant, no cookies, no personal data collection) to count page visits. No advertising trackers or third-party cookies are used.
+
+**Q: Does Morse translation happen on my device?**
+A: Yes. All text-to-Morse and Morse-to-text conversion happens locally in your browser using the built-in JavaScript engine. Only audio transcription requires a network call (to Deepgram). Batch translation of text files is also 100% local.
+
+## Supported Character Set
+
+- Letters: A–Z (26 characters)
+- Digits: 0–9 (10 characters)
+- Punctuation: . , ? ! / ( ) & : ; = + - _ " @ ' (17 characters)
+- Standard: ITU-R M.1677 International Morse Code
+
+## Morse Code Reference (Timing)
+
+- Dot (dit): shortest signal unit
+- Dash (dah): 3× the duration of a dot
+- Letter gap: 3 dots of silence between characters
+- Word gap: 7 dots of silence between words (represented as " / " in text output)
+
+## Use Cases
+
+- **Amateur Radio (Ham Radio)**: Practice CW (continuous wave) Morse communication; generate audio at the exact WPM for license exam preparation.
+- **Learning**: Decode random character challenges with built-in Learning Mode.
+- **Escape Rooms**: Generate Morse code puzzles with audio and light output.
+- **ARG (Alternate Reality Games)**: Encode messages as audio or light signals.
+- **Education**: Demonstrate Morse code in classroom settings.
+- **Accessibility**: Alternative communication encoding/decoding.
+
+## Technology Stack
+
+- React 18 SPA with Vite build system
+- Deepgram Nova-2 model for AI speech-to-text transcription (97%+ accuracy)
+- Web Audio API for real-time Morse tone synthesis
+- Cloudflare Workers for serverless API backend
+
+## Pricing
+
+Free. No account, no registration, no rate limits for end users.
+
+## Structured Data & Machine Access
+
+- Sitemap: https://ai-morse-code-translator.loveyouall.qzz.io/sitemap.xml
+- robots.txt: https://ai-morse-code-translator.loveyouall.qzz.io/robots.txt (explicitly allows GPTBot, ClaudeBot, PerplexityBot, and 20+ other AI crawlers)
+- This file: https://ai-morse-code-translator.loveyouall.qzz.io/llms-full.txt
+- Short version: https://ai-morse-code-translator.loveyouall.qzz.io/llms.txt
+
+## Contact
+
+- Website: https://ai-morse-code-translator.loveyouall.qzz.io/
+- Source code: https://github.com/carloshmccarlos/morse-translator

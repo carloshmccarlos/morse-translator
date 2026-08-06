@@ -9,7 +9,8 @@
     "dev:all": "concurrently -k -n worker,web -c yellow,cyan \"pnpm dev:worker\" \"pnpm dev\"",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seo:assets": "node scripts/generate-seo-assets.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

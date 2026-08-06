@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import { BrandHeader } from "./components/BrandHeader";
 import { ToastContainer } from "./components/ToastContainer";
 import { useAudioRecorder } from "./hooks/useAudioRecorder";
@@ -14,9 +14,42 @@ import { BatchTranslationPanel } from "./components/BatchTranslationPanel";
 import { SignalLampPanel } from "./components/SignalLampPanel";
 import { LearningModePanel } from "./components/LearningModePanel";
 
+// Home-page FAQ block — mirrors the FAQPage JSON-LD in index.html so the
+// structured data always has a matching visible source on the page.
+const HOME_FAQS: { q: string; a: string }[] = [
+  {
+    q: "How does MorseAI convert audio to Morse code?",
+    a: "MorseAI uses AI speech recognition (powered by Deepgram) to transcribe your audio recording or uploaded file into text. It then converts each character to its international Morse code equivalent using the ITU-R M.1677 standard, producing a dot-and-dash sequence you can play, view, or download.",
+  },
+  {
+    q: "What audio formats does MorseAI support?",
+    a: "MorseAI supports WAV, MP3, M4A, and OGG audio files up to 3MB. You can also record directly using your browser microphone for up to 30 seconds.",
+  },
+  {
+    q: "Can I translate Morse code back to text?",
+    a: "Yes. Use the Reverse Translation feature: paste any Morse code string using dots (.), dashes (-), and slash (/) word separators into the Morse Input field, then click Reverse Translate Morse to get the original text instantly.",
+  },
+  {
+    q: "Is MorseAI free to use?",
+    a: "Yes, MorseAI is completely free with no registration or account required. All features including audio upload, microphone recording, batch translation, and WAV export are available at no cost.",
+  },
+  {
+    q: "What is the WPM setting in MorseAI?",
+    a: "WPM stands for Words Per Minute. It controls the speed of the Morse code tone playback and WAV audio export. You can adjust it from 5 WPM (very slow, good for learning) to 40 WPM (experienced operator speed) using the slider in the Morse Output panel.",
+  },
+  {
+    q: "Can I translate multiple texts to Morse code at once?",
+    a: "Yes. The Batch Translation Deck feature lets you import a .txt, .csv, .xls, or .xlsx file containing multiple texts. Each entry is automatically translated to its own Morse row. You can then export all translations as TXT, CSV, or Excel.",
+  },
+  {
+    q: "What Morse code standard does MorseAI use?",
+    a: "MorseAI uses the ITU-R M.1677 International Morse Code standard, which covers all 26 letters (A-Z), digits 0-9, and 17 punctuation symbols including period, comma, question mark, exclamation point, and more.",
+  },
+];
+
 function TranslatorPage() {
   useEffect(() => {
-    document.title = "Morse Code Translator Audio | MorseAI — Convert Voice to Morse Code Free";
+    document.title = "MorseAI — Audio Morse Code Translator (Free)";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute(
@@ -584,6 +617,32 @@ function TranslatorPage() {
             <LearningModePanel />
           </div>
         )}
+
+        {/* FAQ Section — visible Q&A mirroring the FAQPage JSON-LD in index.html */}
+        <section className="panel bg-white/70 dark:bg-panel/80" aria-label="Frequently Asked Questions">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-amber-500/10 dark:border-amber-300/10 pb-4">
+            <div>
+              <h2 className="section-title">Frequently Asked Questions</h2>
+              <p className="mt-1 text-xs text-text-muted">Quick answers before you start</p>
+            </div>
+            <Link
+              to="/faq"
+              className="self-start rounded-lg border border-amber-500/30 dark:border-amber-300/20 px-3 py-1.5 text-2xs font-semibold text-text-title transition hover:bg-amber-500/10 dark:hover:bg-amber-300/10 sm:self-auto"
+            >
+              View all 23 FAQs →
+            </Link>
+          </div>
+          <div className="mt-2">
+            {HOME_FAQS.map((f) => (
+              <details key={f.q} open className="border-b border-border-input last:border-0">
+                <summary className="cursor-pointer py-3 text-sm font-medium text-text-title">
+                  {f.q}
+                </summary>
+                <p className="pb-3 text-sm leading-7 text-text-muted">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
 
         {/* Console Brand Footer */}
         <footer className="mt-8 text-center text-xs text-text-muted/70 border-t border-amber-500/5 dark:border-amber-300/5 pt-4">

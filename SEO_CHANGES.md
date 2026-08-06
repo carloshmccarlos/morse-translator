@@ -1,6 +1,44 @@
 # SEO Changes Implemented
 
-## 1. File: `/public/sitemap.xml`
+## 2026-08-06 — SEO/GEO Optimization Round 2
+
+### 1. File: `public/og-image.png` (P0 fix)
+- **What changed:** The file was actually a JPEG (1024×1024) with a `.png` extension, which broke social previews. Re-encoded to a true PNG at 1200×630 via `scripts/generate-seo-assets.mjs`.
+- **Why it changed:** Social platforms (WeChat/X/Telegram) verify the declared `og:image:type` against the file; a mismatched format fails the preview.
+
+### 2. New favicon / PWA icon set (generated from `public/favicon.png`)
+- `public/favicon-16x16.png`, `public/favicon-32x32.png`, `public/favicon.ico` (16/32/48 PNG-embedded ICO)
+- `public/icons/apple-touch-icon.png` (180), `public/icons/icon-192.png`, `public/icons/icon-512.png`
+- `public/manifest.json` — PWA manifest (standalone, theme_color #0f1115, maskable icon)
+- **Why it changed:** Browser tabs, iOS home screen, and PWA installability all require these; previously only a single 640×640 `favicon.png` existed.
+- Regenerate anytime: `node scripts/generate-seo-assets.mjs`
+
+### 3. GEO: `public/llms-full.txt` (new)
+- Full llmstxt.org-compliant file: all 23 FAQs with full answers, feature list, character set, 1:3:7 timing reference, use cases, tech stack, machine-access endpoints.
+- `public/llms.txt` updated to link to `/llms-full.txt` and corrected FAQ count 26 → 23.
+
+### 4. File: `public/robots.txt`
+- Expanded explicit AI-bot allowlist from 6 to 23 agents (added GPTBot, ClaudeBot, anthropic-ai, Google-Extended, Google-CloudVertexBot, cohere-ai, Cohere-AI, Bytespider, Applebot, meta-externalagent, meta-webagent, YouBot, Diffbot, CCBot, ImagesiftBot, TimpiBot, Perplexity-User).
+- Kept `Disallow: /api/` for the worker endpoint; sitemap reference retained.
+
+### 5. File: `public/sitemap.xml`
+- `lastmod` refreshed to 2026-08-06 for all 3 URLs (/, /about, /faq).
+
+### 6. File: `index.html`
+- Title optimized to ~55 chars: `MorseAI — Audio Morse Code Translator (Free)` (was 77 chars, truncated in SERPs).
+- Added `og:image:type` (image/png), `og:image:secure_url`, `twitter:image:alt`.
+- Added `theme-color`, `application-name`, full icon links (16/32/ico/apple-touch-icon), `manifest.json`.
+- JSON-LD consolidated into a single `@graph` with 6 entity types: **WebSite + Organization + WebApplication + FAQPage + HowTo + BreadcrumbList**, linked via `@id` anchors (`#website`, `#organization`, `#webapp`, `#faq`, `#howto`, `#breadcrumb`); Organization has real GitHub `sameAs`.
+
+### 7. Files: `src/App.tsx`, `src/pages/FaqPage.tsx`
+- Home page now renders a visible FAQ block (`<details open>` ×7) that exactly mirrors the FAQPage JSON-LD — AI engines distrust FAQ structured data without matching visible text.
+- `/faq` page injects a page-level FAQPage JSON-LD (all 23 visible Q&As) via `useEffect`, so the full FAQ set is structured-data-annotated.
+- Page titles synced with new brand title.
+
+### 8. Scripts
+- `scripts/generate-seo-assets.mjs` — regenerates all raster assets from `public/favicon.png` and repairs og-image. Uses sharp (isolated tool dir fallback since pnpm is broken in this sandbox).
+
+## 1. File: `/public/sitemap.xml` (original round)
 - **What changed:** Created a static XML sitemap for the site pointing to the home URL.
 - **Why it changed:** Enables search engines like Google to discover and index the page correctly because it acts as a structured map.
 - **Assumption:** I assumed the production URL is `https://morseai.app`. You should update this to your actual production domain.
