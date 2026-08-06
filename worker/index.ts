@@ -8,6 +8,12 @@ interface Env {
   /** Comma-separated list of allowed origins, e.g. "https://example.com,https://www.example.com".
    *  Defaults to "*" in local development only. Set this in production wrangler secrets. */
   ALLOWED_ORIGIN?: string;
+  /** Static assets binding (dist/). Serves the SPA, robots.txt, llms.txt, etc.
+   *  With not_found_handling = "single-page-application" it falls back to
+   *  index.html for client-side routes like /about and /faq. */
+  ASSETS?: {
+    fetch(request: Request): Promise<Response>;
+  };
 }
 
 const MAX_AUDIO_BYTES = 3 * 1024 * 1024;
@@ -112,6 +118,13 @@ export default {
 
     if (url.pathname === "/health") {
       return jsonResponse({ status: "ok", service: "morseai-worker" }, 200, origin);
+    }
+
+    // Serve static assets (SPA + robots.txt/sitemap/llms/og-image). With
+    // not_found_handling = "single-page-application" in wrangler.toml,
+    // unmatched client-side routes (/about, /faq) fall back to index.html.
+    if (env.ASSETS) {
+      return env.ASSETS.fetch(request);
     }
 
     return jsonResponse({ error: "Not found." }, 404, origin);
